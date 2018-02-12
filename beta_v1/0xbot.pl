@@ -44,6 +44,9 @@ if($do == 1){
 			print retweet($my_auth_token,$my_tweet);
 		}
 	}
+	print "\n./Done";
+	sleep(20);
+	exit();
 }
 if($do == 2){
 	print 'Soon [Version 2]';
