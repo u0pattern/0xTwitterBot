@@ -11,12 +11,14 @@ print q(
 [  CoDeD By 1337r00t  ]
 +---------------------+
 [  Twitter: _1337r00t ]
-[ Instagram: x1337r00t]
+[ Instagram: _1337r00t]
 +=====================+
-Choo0o0o0o0o0oooose Dude :}:-
+Choo0o0o0o0o0oooose Dude :{Enter Any Number}:-
 
 1 - Retweets
-2 - Likes # Soon In version 2
+2 - Likes
+3 - Follows
+4 - Both {Retweets+Likes+Follows}
 > );
 $do = <STDIN>;
 chomp($do);
@@ -49,9 +51,90 @@ if($do == 1){
 	exit();
 }
 if($do == 2){
-	print 'Soon [Version 2]';
+	print "CompoList [Ex:admin:12345](list.txt)\n -----\n Input CompoList => ";
+	$list2 = <STDIN>;
+	chomp($list2);
+	print "\n------\nEnter Tweet URL => ";
+	$url_tweet2 = <STDIN>;
+	chomp($url_tweet2);
+	if($url_t2 = $url_tweet2=~/\/status\/(.*)/){
+		$my_tweet2 = $1;
+	}
+	print "URL Tweet: $url_tweet2\nID Tweet: $my_tweet2\t Let's Goo :)\n";
+	open (COMPOFILE2, "<$list2") || die "[-] Can't Found ($list2) !";
+	@COMPOS2 = <COMPOFILE2>;
+	close COMPOFILE2;
+	foreach $compolist2 (@COMPOS2 ) {
+	chomp $compolist2;
+		$check2 = auth_token($compolist2);
+		if($check2=~/exit/){
+			print "Failed_Login -> ($compolist2)\n";
+		}else{
+			$my_auth_token2 = $check2;
+			print like($my_auth_token2,$my_tweet2);
+		}
+	}
+	print "\n./Done";
+	sleep(20);
+	exit();
 }
-
+if($do == 3){
+	print "CompoList [Ex:admin:12345](list.txt)\n -----\n Input CompoList => ";
+	$list3 = <STDIN>;
+	chomp($list3);
+	print "\n------\nEnter Your Username => ";
+	$by_user = <STDIN>;
+	chomp($by_user);
+	open (COMPOFILE3, "<$list3") || die "[-] Can't Found ($list4) !";
+	@COMPOS3 = <COMPOFILE3>;
+	close COMPOFILE3;
+	foreach $compolist3 (@COMPOS3 ) {
+	chomp $compolist3;
+		$check3 = auth_token($compolist3);
+		if($check3=~/exit/){
+			print "Failed_Login -> ($compolist3)\n";
+		}else{
+			$my_auth_token3 = $check3;
+			print follows($my_auth_token3,$by_user);
+		}
+	}
+	print "./Done";
+	sleep(20);
+	exit();
+}
+if($do == 4){
+	print "CompoList [Ex:admin:12345](list.txt)\n -----\n Input CompoList => ";
+	$list4 = <STDIN>;
+	chomp($list4);
+	print "\n------\nEnter Your Username => ";
+	$by_user = <STDIN>;
+	chomp($by_user);
+	print "\n------\nEnter Tweet URL => ";
+	$url_tweet4 = <STDIN>;
+	chomp($url_tweet4);
+	if($url_t4 = $url_tweet4=~/\/status\/(.*)/){
+		$my_tweet4 = $1;
+	}
+	print "URL Tweet: $url_tweet4\nID Tweet: $my_tweet4\t Let's Goo :)\n";
+	open (COMPOFILE4, "<$list4") || die "[-] Can't Found ($list4) !";
+	@COMPOS4 = <COMPOFILE4>;
+	close COMPOFILE4;
+	foreach $compolist4 (@COMPOS4 ) {
+	chomp $compolist4;
+		$check4 = auth_token($compolist4);
+		if($check4=~/exit/){
+			print "Failed_Login -> ($compolist4)\n";
+		}else{
+			$my_auth_token4 = $check4;
+			print retweet($my_auth_token4,$my_tweet4);
+			print like($my_auth_token4,$my_tweet4);
+			print follows($my_auth_token4,$by_user);
+		}
+	}
+	print "./Done";
+	sleep(20);
+	exit();
+}
 ##########################
 sub ct0(){
 	$sess = LWP::UserAgent->new();
@@ -61,18 +144,62 @@ sub ct0(){
 	}
 	return $c;
 }
+sub follows($$){
+	($token3,$user_follow) = @_;
+	$ct0_3 = ct0();
+	$follows = LWP::UserAgent->new();
+	$follows->default_header("authorization" => 'Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw');
+	$follows->default_header("x-twitter-auth-type" => 'OAuth2Session');
+	$follows->default_header("x-csrf-token" => $ct0_3);
+	$follows->default_header("X-Twitter-Active-User" => 'yes');
+	$follows->default_header("Cookie" => 'ct0='.$ct0_3.'; auth_token='.$token3.';');
+	$followed = $follows->post('https://api.twitter.com/1.1/friendships/create.json',
+	{
+		challenges_passed=>'false',
+		handles_challenges=>'1',
+		include_blocked_by=>'true',
+		include_blocking=>'true',
+		include_can_dm=>'true',
+		include_followed_by=>'true',
+		include_mute_edge=>'true',
+		skip_status=>'true',
+		screen_name=>$user_follow
+	}
+	);
+	if($followed->content=~/"id":/){
+		return "Success_FOLLOWS\n";
+	}else{
+		return "Fail_FOLLOWS\n";
+	}
+}
+sub like($$){
+	($token2,$id_tweet2) = @_;
+	$ct0_2 = ct0();
+	$like = LWP::UserAgent->new();
+	$like->default_header("authorization" => 'Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw');
+	$like->default_header("x-twitter-auth-type" => 'OAuth2Session');
+	$like->default_header("x-csrf-token" => $ct0_2);
+	$like->default_header("X-Twitter-Active-User" => 'yes');
+	$like->default_header("Cookie" => 'ct0='.$ct0_2.'; auth_token='.$token2.';');
+	$liked = $like->post('https://api.twitter.com/1.1/favorites/create.json',{id=>$id_tweet2});
+	if($liked->content=~/"created_at":"/){
+		return "Success_LIKE\n";
+	}else{
+		return "Fail_LIKE\n";
+	}
+}
 sub retweet($$){
 	($token1,$id_tweet) = @_;
-	$ct0 = ct0();
+	$ct0_1 = ct0();
 	$retweet = LWP::UserAgent->new();
 	$retweet->default_header("authorization" => 'Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw');
 	$retweet->default_header("x-twitter-auth-type" => 'OAuth2Session');
-	$retweet->default_header("x-csrf-token" => $ct0);
+	$retweet->default_header("x-csrf-token" => $ct0_1);
 	$retweet->default_header("X-Twitter-Active-User" => 'yes');
-	$retweet->default_header("Cookie" => 'ct0='.$ct0.'; auth_token='.$token1.';');
+	$retweet->default_header("Cookie" => 'ct0='.$ct0_1.'; auth_token='.$token1.';');
 	$retweeted = $retweet->post('https://api.twitter.com/1.1/statuses/retweet.json',{id=>$id_tweet});
 	if($retweeted->content=~/"created_at":"/){
-		return "Success\n";
+		return "Success_Retweet\n";
 	}else{
 		return "Fail_Retweet\n";
 	}
