@@ -74,7 +74,7 @@ sub retweet($$){
 	if($retweeted->content=~/"created_at":"/){
 		return "Success\n";
 	}else{
-		return "Fail_Retweet\n";
+		return $retweeted->content();
 	}
 }
 sub login($$){
